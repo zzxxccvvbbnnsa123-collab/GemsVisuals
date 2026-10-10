@@ -54,4 +54,4 @@ public class MainActivity extends Activity {
         startService(new Intent(this, OverlayService.class));
         finish();
     }
-  }
+}
