@@ -1,0 +1,91 @@
+import { world, system, MolangVariableMap } from "@minecraft/server";
+
+let particlesEnabled = true;
+let trailsEnabled = true;
+
+function spawnBlueParticle(player, location) {
+    try {
+        const molang = new MolangVariableMap();
+
+        molang.setColorRGB("variable.color", {
+            red: 0.12,
+            green: 0.42,
+            blue: 1.0
+        });
+
+        player.dimension.spawnParticle(
+            "minecraft:colored_flame_particle",
+            location,
+            molang
+        );
+    } catch (error) {
+        // Пропускаем частицу, если игра не может её создать.
+    }
+}
+
+function handleCommand(event) {
+    const id = event.id.toLowerCase();
+    const message = event.message.trim().toLowerCase();
+
+    if (id === "gemsvisuals:particles") {
+        if (message === "on") {
+            particlesEnabled = true;
+            world.sendMessage("§bGemsVisuals: Particles ON");
+        } else if (message === "off") {
+            particlesEnabled = false;
+            world.sendMessage("§7GemsVisuals: Particles OFF");
+        } else if (message === "status") {
+            world.sendMessage(
+                "§bParticles: " +
+                (particlesEnabled ? "ON" : "OFF")
+            );
+        }
+    }
+
+    if (id === "gemsvisuals:trails") {
+        if (message === "on") {
+            trailsEnabled = true;
+            world.sendMessage("§bGemsVisuals: Trails ON");
+        } else if (message === "off") {
+            trailsEnabled = false;
+            world.sendMessage("§7GemsVisuals: Trails OFF");
+        } else if (message === "status") {
+            world.sendMessage(
+                "§bTrails: " +
+                (trailsEnabled ? "ON" : "OFF")
+            );
+        }
+    }
+}
+
+world.afterEvents.scriptEventReceive.subscribe(handleCommand);
+
+system.runInterval(() => {
+    for (const player of world.getAllPlayers()) {
+        const position = player.location;
+
+        if (particlesEnabled) {
+            spawnBlueParticle(player, {
+                x: position.x + (Math.random() - 0.5) * 0.6,
+                y: position.y + 0.8 + Math.random() * 0.7,
+                z: position.z + (Math.random() - 0.5) * 0.6
+            });
+        }
+
+        if (trailsEnabled) {
+            let direction;
+
+            try {
+                direction = player.getViewDirection();
+            } catch (error) {
+                continue;
+            }
+
+            spawnBlueParticle(player, {
+                x: position.x - direction.x * 0.6,
+                y: position.y + 0.15,
+                z: position.z - direction.z * 0.6
+            });
+        }
+    }
+}, 4);
