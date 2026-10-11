@@ -1,7 +1,7 @@
 name: Build GemsVisuals APK
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   build:
@@ -23,7 +23,7 @@ jobs:
           gradle-version: '8.9'
 
       - name: Build APK
-        run: gradle assembleDebug
+        run: gradle --stacktrace --info assembleDebug
 
       - name: Save APK
         uses: actions/upload-artifact@v4
