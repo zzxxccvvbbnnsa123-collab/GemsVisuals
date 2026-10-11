@@ -8,10 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download source
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -23,10 +23,12 @@ jobs:
           gradle-version: '8.9'
 
       - name: Build APK
-        run: gradle --stacktrace --info assembleDebug
+        run: gradle --stacktrace --info :app:assembleDebug
 
-      - name: Save APK
+      - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: GemsVisuals-APK
           path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
