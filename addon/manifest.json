@@ -1,17 +1,29 @@
 {
-"format_version": 2,
-"header": {
-"name": "GemsVisuals",
-"description": "GemsVisuals Bedrock Add-on",
-"uuid": "d3a6b1c2-7e4f-4a9b-8c2d-1f6e5a7b9c30",
-"version": [1, 0, 0],
-"min_engine_version": [1, 21, 0]
-},
-"modules": [
-{
-"type": "data",
-"uuid": "a7c2d9e4-5b1f-4a8c-9d3e-6f2b1c8a5e40",
-"version": [1, 0, 0]
-}
-]
+  "format_version": 2,
+  "header": {
+    "name": "GemsVisuals",
+    "description": "GemsVisuals for Minecraft Bedrock",
+    "uuid": "d3a6b1c2-7e4f-4a9b-8c2d-1f6e5a7b9c30",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 0]
+  },
+  "modules": [
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "a7c2d9e4-5b1f-4a8c-9d3e-6f2b1c8a5e40",
+      "version": [1, 0, 0],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.4.0"
+    },
+    {
+      "module_name": "@minecraft/server-ui",
+      "version": "2.0.0"
+    }
+  ]
 }
