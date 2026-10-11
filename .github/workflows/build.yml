@@ -1,34 +1,56 @@
-name: Build GemsVisuals APK
+name: Build GemsVisuals
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "addon/**"
+      - ".github/workflows/build.yml"
 
 jobs:
-  build:
+  build-addon:
+    name: Package Minecraft Add-On
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Download source
         uses: actions/checkout@v4
 
-      - name: Set up Java 17
+      - name: Create MCpack
+        run: |
+          cd addon
+          zip -r ../GemsVisuals-Addon.mcpack .
+
+      - name: Upload Add-On
+        uses: actions/upload-artifact@v4
+        with:
+          name: GemsVisuals-Addon
+          path: GemsVisuals-Addon.mcpack
+
+  build-apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download source
+        uses: actions/checkout@v4
+
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.9'
+          gradle-version: "8.9"
 
       - name: Build APK
-        run: gradle --stacktrace --info :app:assembleDebug
+        run: gradle assembleDebug
 
-      - name: Upload APK
-        if: success()
+      - name: Save APK
         uses: actions/upload-artifact@v4
         with:
           name: GemsVisuals-APK
           path: app/build/outputs/apk/debug/*.apk
-          if-no-files-found: error
